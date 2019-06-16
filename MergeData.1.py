@@ -3,16 +3,15 @@ from fuzzywuzzy import fuzz
 
 
 
-def match_names(name, list, min_score=0):
+def match_data(proc_item, fin_data, min_score=0):
     max_score = -1
     max_name = ""
-    for n in list:
-
-        score = fuzz.ratio(name, n)
-
-        if (score > min_score) & (score > max_score):
-            max_name = n
-            max_score = score
+    for item in fin_data.itertuples():
+        if(item.location_city == proc_item.city):
+            score = fuzz.ratio(name, n)
+            if (score > min_score) & (score > max_score):
+                max_name = n
+                max_score = score
     return (max_name, max_score)
 
 
@@ -35,9 +34,9 @@ finance_data = df_fin_structure.merge(df_fin_address, left_on='factset_entity_id
 # Combine Procurement Data
 procurement_data = df_pro_geo.merge(df_pro_vendor, left_on='geo_id', right_on='geo_id', how='outer')
 
-
+print "Matching data..."
 for row in procurement_data.itertuples():
-    match = match_names(row.name, finance_data.entity_name)
-    print row.name + " --> " + str(match)
-
+    print row.name
+    # match = match_names(row, finance_data)
+    # print row.name + " --> " + str(match)
 
